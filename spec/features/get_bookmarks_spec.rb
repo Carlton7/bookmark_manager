@@ -3,17 +3,15 @@ feature 'bookmark checking' do
   scenario 'checks that the route /bookmarks allows us to view our bookmarks' do
     visit '/'
 
-    con = PG.connect(dbname: 'bookmark_manager_test')
-    
-    con.exec("INSERT INTO bookmarks VALUES(1, 'http://www.makersacademy.com');")
-    con.exec("INSERT INTO bookmarks VALUES(2, 'http://www.destroyallsoftware.com');")
-    con.exec("INSERT INTO bookmarks VALUES(3, 'http://www.google.com');")
+    Bookmark.create(url: 'http://www.makersacademy.com', title: 'Makers')
+    Bookmark.create(url: 'http://www.destroyallsoftware.com', title: 'DestroyAllSoftware')
+    Bookmark.create(url: 'http://www.google.com', title: 'Google')
 
     click_button 'All Bookmarks'
 
-    expect(page). to have_content 'http://www.google.com'
-    expect(page). to have_content 'http://www.makersacademy.com'
-    expect(page). to have_content 'http://www.destroyallsoftware.com'
+    expect(page). to have_link('Google' , href: 'http://www.google.com')
+    expect(page). to have_link('Makers' , href: 'http://www.makersacademy.com')
+    expect(page). to have_link('DestroyAllSoftware' , href: 'http://www.destroyallsoftware.com')
   end
   
 end
